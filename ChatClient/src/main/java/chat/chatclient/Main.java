@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -105,7 +106,7 @@ public class Main extends Application {
 
         TextField username = new TextField();
         username.setPrefWidth(150);
-        username.setPromptText("채팅에서 사용할 닉네임을 입력하세요 > ");
+        username.setPromptText("닉네임을 입력하세요. ");
         HBox.setHgrow(username, Priority.ALWAYS);
 
         TextField ipField = new TextField("127.0.0.1");
@@ -116,6 +117,8 @@ public class Main extends Application {
         mainLayout.setTop(hBox);
 
         textArea = new TextArea();
+        textArea.setStyle("-fx-control-inner-background: black; -fx-text-fill: white;");
+        textArea.setFont(new Font("맑은 고딕", 17));
         textArea.setEditable(false);
         mainLayout.setCenter(textArea);
 
@@ -133,7 +136,7 @@ public class Main extends Application {
         sendButton.setDisable(true);
 
         sendButton.setOnAction(event -> {
-            send(username.getText() + " : " + input.getText() + "\n");
+            send("[" + username.getText() +"]" + " : " + input.getText() + "\n");
             input.setText("");
             input.requestFocus();
         });
@@ -149,7 +152,7 @@ public class Main extends Application {
                 }
                 startClient(ipField.getText(), port);
                 Platform.runLater(() -> {
-                    textArea.appendText(" [ 채팅방 접속 ]\n");
+                    textArea.appendText(" <<채팅에 입장했습니다.>>\n");
                 });
                 connectButton.setText("종료하기");
                 input.setDisable(false);
@@ -159,7 +162,7 @@ public class Main extends Application {
             else  {
                 stopClient();
                 Platform.runLater(() -> {
-                    textArea.appendText("[ 채팅방 퇴장 ]\n" );
+                    textArea.appendText("<<채팅에서 나갔습니다.>>\n" );
                 });
                 connectButton.setText("접속하기");
                 input.setDisable(true);
@@ -168,6 +171,7 @@ public class Main extends Application {
         });
 
         BorderPane chatControls = new BorderPane();
+        chatControls.setStyle("-fx-border-color: skyblue;");
         chatControls.setLeft(connectButton);
         chatControls.setCenter(input);
         chatControls.setRight(sendButton);
@@ -175,7 +179,7 @@ public class Main extends Application {
         mainLayout.setBottom(chatControls);
 
         Scene scene = new Scene(mainLayout, 500, 500);
-        stage.setTitle(" [ 채팅 클라이언트 ]");
+        stage.setTitle(" [채팅 유저]");
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> stopClient());
         stage.show();

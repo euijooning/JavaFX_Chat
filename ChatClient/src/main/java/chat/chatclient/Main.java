@@ -3,8 +3,14 @@ package chat.chatclient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -88,9 +94,93 @@ public class Main extends Application {
     }
 
 
-    // 실제 프로그램 작동 시작 메서드
+    // 실제 프로그램 작동시키는 메서드
     @Override
     public void start(Stage stage) throws IOException {
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setPadding(new Insets(5));
+
+        HBox hBox = new HBox();
+        hBox.setPrefWidth(150);
+
+        TextField username = new TextField();
+        username.setPrefWidth(150);
+        username.setPromptText("채팅에서 사용할 닉네임을 입력하세요 > ");
+        HBox.setHgrow(username, Priority.ALWAYS);
+
+        TextField ipField = new TextField("127.0.0.1");
+        TextField portField = new TextField("9876");
+        mainLayout.setCenter(textArea);
+
+        hBox.getChildren().addAll(username, ipField, portField);
+        mainLayout.setTop(hBox);
+
+        textArea = new TextArea();
+        textArea.setEditable(false);
+        mainLayout.setCenter(textArea);
+
+        TextField input = new TextField();
+        input.setPrefWidth(Double.MAX_VALUE);
+        input.setDisable(true);
+
+        input.setOnAction(event -> {
+            send(username.getText() + " : " + input.getText() + "\n");
+            input.setText("");
+            input.requestFocus();
+        });
+
+        Button sendButton = new Button("보내기");
+        sendButton.setDisable(true);
+
+        sendButton.setOnAction(event -> {
+            send(username.getText() + " : " + input.getText() + "\n");
+            input.setText("");
+            input.requestFocus();
+        });
+
+        Button connectButton = new Button("접속하기");
+        connectButton.setOnAction(event -> {
+            if (connectButton.getText().equals("접속하기")) {
+                int port = 9876;
+                try {
+                    port = Integer.parseInt(portField.getText());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                startClient(ipField.getText(), port);
+                Platform.runLater(() -> {
+                    textArea.appendText(" [ 채팅방 접속 ]\n");
+                });
+                connectButton.setText("종료하기");
+                input.setDisable(false);
+                sendButton.setDisable(false);
+                input.requestFocus();
+            }
+            else  {
+                stopClient();
+                Platform.runLater(() -> {
+                    textArea.appendText("[ 채팅방 퇴장 ]\n" );
+                });
+                connectButton.setText("접속하기");
+                input.setDisable(true);
+                sendButton.setDisable(true);
+            }
+        });
+
+        BorderPane chatControls = new BorderPane();
+        chatControls.setLeft(connectButton);
+        chatControls.setCenter(input);
+        chatControls.setRight(sendButton);
+
+        mainLayout.setBottom(chatControls);
+
+        Scene scene = new Scene(mainLayout, 500, 500);
+        stage.setTitle(" [ 채팅 클라이언트 ]");
+        stage.setScene(scene);
+        stage.setOnCloseRequest(event -> stopClient());
+        stage.show();
+
+        connectButton.requestFocus();
     }
 
 

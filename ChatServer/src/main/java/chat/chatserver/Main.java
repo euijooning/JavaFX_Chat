@@ -94,15 +94,17 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         // 레이아웃을 하나 만들어서 요소를 담기
         BorderPane pane = new BorderPane();
+        pane.setStyle("-fx-background-color: red;");
         pane.setPadding(new Insets(5));;
 
         TextArea textArea = new TextArea();
+        textArea.setStyle("-fx-control-inner-background: black; -fx-text-fill: white;");
         textArea.setEditable(false); // 수정 불가
-        textArea.setFont(new Font("맑은 고딕", 15));
+        textArea.setFont(new Font("맑은 고딕", 17));
         pane.setCenter(textArea);
 
         // 시작 스위치 만들기
-        Button toggleButton = new Button("시작하기");
+        Button toggleButton = new Button("서버 시작하기");
         toggleButton.setMaxWidth(Double.MAX_VALUE);
         BorderPane.setMargin(toggleButton, new Insets(1, 0, 0, 0));
         pane.setBottom(toggleButton); // 아래 위치에 담기
@@ -112,33 +114,33 @@ public class Main extends Application {
 
         // 이벤트 발생(버튼 눌렀을 때) 처리
         toggleButton.setOnAction(event -> {
-            if (toggleButton.getText().equals("시작하기")) {
+            if (toggleButton.getText().equals("서버 시작하기")) {
                 startServer(IP, port);
                 // 버튼을 눌렀을 때 함수를 이용하여 처리하는 형태이다.
                 Platform.runLater(() -> {
-                    String message = String.format("[서버 시작]\n", IP, port);
+                    String message = String.format("[서버가 시작되었습니다.]\n", IP, port);
                     textArea.appendText(message);
-                    toggleButton.setText("종료하기");
+                    toggleButton.setText("서버 종료하기");
 
                     // 추가: 서버 시작 메시지 팝업
-                    showAlert("서버 시작", "서버가 시작되었습니다.");
+                    showAlert("시작", "서버가 시작되었습니다. 클라이언트를 연결하세요.");
                 });
             } else {
                 // 종료하기 버튼 누르면
                 stopServer(); // 버튼 종료되고
                 Platform.runLater(() -> {
-                    String message = String.format("[서버 종료]\n", IP, port);
+                    String message = String.format("[서버가 종료되었습니다. 종료]\n", IP, port);
                     textArea.appendText(message);
                     toggleButton.setText("시작하기");
 
                     // 추가: 서버 종료 메시지 팝업
-                    showAlert("서버 종료", "서버가 종료됩니다.");
+                    showAlert("종료", "서버가 종료되었습니다..");
                 });
             }
         });
 
         Scene scene = new Scene(pane, 500, 500);
-        stage.setTitle("[ 채팅 서버 ]");
+        stage.setTitle("[채팅 서버]");
         stage.setOnCloseRequest(event -> stopServer());
         stage.setScene(scene);
         stage.show();

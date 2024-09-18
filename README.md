@@ -4,4 +4,4 @@ JavaFX로 간단한 채팅 프로그램을 구현했습니다. <br>
 좀 더 발전된 내용으로, Thread를 이용한 양방향 채팅 프로그램을 만들어 보았습니다.<br>
 
 ### 시연 영상
-- https://www.youtube.com/watch?v=Ngx18PQvoXI
+- https://youtu.be/JB61Krqaefo
